@@ -1,0 +1,31 @@
+<launch>
+    <arg name="namespace" default="robot1"/>
+    <!-- Arguments -->
+    <arg name="odom_topic" default="$(arg namespace)/odom"/>
+    <arg name="cmd_vel_topic" default="$(arg namespace)/cmd_vel"/>
+    <arg name="move_forward_only" default="false"/>
+    <!--arg name="base_frame_id" default="/robot1"/-->
+    <!--arg name="global_frame_id" default="/map"/-->
+    <arg name="map_topic" default="map"/>
+    <!-- move_base -->
+    <group ns="$(arg namespace)">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+        <param name="robot_base_frame" value=" $(arg namespace)/base_footprint"/>
+        <param name="global_frame" value=" $(arg namespace)/odom"/>
+        <param name="topic" value=" $(arg namespace)/scan"/>
+        <rosparam file="$(find transbot_nav)/param/common/move_base_params_multi.yaml" command="load"/>
+        <rosparam file="$(find transbot_nav)/param/common/global_costmap_params_multi.yaml" command="load"/>
+        <rosparam file="$(find transbot_nav)/param/common/global_planner_params_multi.yaml" command="load"/>
+        <rosparam file="$(find transbot_nav)/param/common/local_costmap_params_multi.yaml" command="load"/>
+        <rosparam file="$(find transbot_nav)/param/common/dwa_local_planner_params_multi.yaml" command="load"/>
+        <rosparam file="$(find transbot_nav)/param/common/costmap_common_params_multi.yaml" command="load"
+                  ns="global_costmap"/>
+        <rosparam file="$(find transbot_nav)/param/common/costmap_common_params_multi.yaml" command="load"
+                  ns="local_costmap"/>
+        <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
+        <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)"/>
+    </node>
+    </group>
+</launch>

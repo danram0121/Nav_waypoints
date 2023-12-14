@@ -1,0 +1,15 @@
+<launch>
+    <arg name="namespace" default="robot1" />
+    <!--group ns="$(arg namespace)"-->
+    <!-- 运行驱动模块 -->
+    <include file="$(find transbot_bringup)/launch/bringup_multi.launch">
+        <arg name="namespace" value="$(arg namespace)" />
+    </include>
+    <!--/group-->
+    <!-- 运行lidar模块 -->
+    <include file="$(find transbot_nav)/launch/library/rplidar_multi.launch">
+        <arg name="namespace" value="$(arg namespace)" />
+    </include>
+    <!-- 激光雷达的坐标系-->
+    <!--/group-->
+</launch>
